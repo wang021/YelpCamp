@@ -1,0 +1,91 @@
+<% include ../partial/header.ejs %>
+<div class="container">
+    <div class="row">
+        <div class="col-md-3">
+            
+            <div id="map"></div>
+        </div>
+        
+        <div class = "col-md-9">
+            <div class="thumbnail">
+              <img src="<%=camp.img%>"/>  
+              <div class="caption-full">
+                  <h4 class="pull-right"><%=camp.price%></h4>
+                  <h4><a> <p><%=camp.name%></p></a></h4>
+                  <em>Submitted by <%=camp.author.username%></em>
+                  <% if(currentUser&&currentUser._id.equals(camp.author.id)) {%>
+                  <a class="btn btn-xs btn-warning" href="/campground/<%=camp._id%>/edit">Edit</a>
+                  <form id="delete-form"action = "/campground/<%=camp._id%>?_method=delete" method="POST">
+                      <button class="btn btn-xs btn-danger">DELETE</button>
+                  </form>
+                  <% }%>
+                  <p><%=camp.desc%></p>
+              </div>
+            </div>
+            
+        </div>
+    </div>
+   
+            <div class="well">
+            <div class="text-right">
+                <a class="btn btn-primary" href="/campground/<%=camp._id%>/comment/new">Add Comment</a>
+                </div>
+    <hr/>
+    <% camp.comments.forEach(function(comment){ %>
+     <div class="row">
+        <div class="col-md-12">
+        <p> <strong><%=comment.author.username%></strong>-<%=comment.content%></p>
+        <% if(currentUser&&currentUser._id.equals(comment.author.id)){%>
+        <a class="btn btn-xs btn-warning" href="/campground/<%= camp._id%>/comment/<%=comment._id%>/edit">
+            Edit
+        </a>
+        <form id="delete-form" action="/campground/<%=camp._id%>/comment/<%=comment._id%>?_method=delete" method="POST">
+            <button class="btn btn-xs btn-danger">DELETE</button>
+        </form>
+        <% }%>
+    <% }); %>
+    </div>
+        </div>
+    </div>
+    
+   
+    
+    
+    
+</div>
+
+<script>
+
+    function initMap(){
+        var lat = <%= camp.lat%>;
+        var lng = <%= camp.lng%>;
+        var center = {lat:lat,lng:lng};
+        var map = new google.maps.Map(document.getElementById('map'),{
+            zoom:8,
+            center:center,
+            scrollwheel:false
+        });
+        var contentString = `
+        <strong><%=camp.name%><br/>
+        <%= camp.location%></strong>
+        <p><%= camp.desc%></p>
+        `
+        
+        var infowindow = new google.maps.InfoWindow({
+            content:contentString
+        });
+        var marker = new google.maps.Marker({
+            position:center,
+            map:map
+            
+        });
+        marker.addListener('click',function(){
+            infowindow.open(map,marker);
+        })
+    }
+    initMap();
+</script>
+<script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAGmbWUe8UQj0ubmx3U3nd-xeqC4y7EkgI&callback=initMap"></script>
+    
+<% include ../partial/footer.ejs %>

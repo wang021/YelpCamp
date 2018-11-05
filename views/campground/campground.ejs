@@ -1,0 +1,62 @@
+<% include ../partial/header.ejs %>
+
+        
+
+<div class="container">
+    <div class="jumbotron">
+        <div class="container"> <h1>Welcome to YelpCamp!</h1>
+    <p>View the campground we recommened</p>
+    <p>
+            	<form action="/campground/page/1" method="GET" class="form-inline">
+            		<div class="form-group">
+            			<input type="text" name="search" placeholder="Campground search..." class="form-control">
+            			<input type="submit" value="Search" class="btn btn-default">
+            		</div>
+            	</form>
+            </p>
+    <p><a class="btn btn-primary" href="/add">Add new campground</a></p></div>
+   
+    </div>
+    <div class="row text-center">
+              <div class="col-md-12">
+             <% if(noMatch !== null) { %>
+             <h3><%= noMatch %></h3>
+             
+             <% } %>
+         </div>
+    <% campground.forEach(function(camp){ %>
+    
+        <div class="col-lg-3 col-md-4 col-sm-6">
+        
+        <div class="thumbnail">
+            <img src=<%= camp.img%> >
+            <div class="caption">
+                <%= camp.name%>
+            
+            <p><a class="btn btn-primary" href="/campground/<%=camp._id %>">More Info</a></p>
+            </div>
+        </div>
+       
+        </div>
+    <% }); %>
+     
+    </div>
+    <nav aria-label="Page navigation" style="text-align: center">
+      <ul class="pagination">
+        <li>
+          <a href="/campground/page/<%=pageNumber-1>0 ? pageNumber-1:pageNumber%>?search=<%=keywords%>" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+          </a>
+        </li>
+        <% for(var i = pageNumber;i<=pages&&i<=pageNumber+10;i++){%>
+        <li><a href="/campground/page/<%=i%>?search=<%=keywords%>" ><%= i%></a></li>
+        <% }%>
+        <li>
+          <a href="/campground/page/<%=pageNumber+1<=pages ? pageNumber+1:pageNumber%>?search=<%=keywords%>" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+          </a>
+        </li>
+      </ul>
+</nav>
+    </div>
+<% include ../partial/footer.ejs %>
